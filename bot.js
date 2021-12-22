@@ -3,12 +3,16 @@ const fs = require("fs");
 const dotenv = require('dotenv').config({path:".env"});
 
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
+  partials: ["CHANNEL"],
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES]
 });
 
+// holds all available commands
+const calls = ['ping','echo','target','kill','reload','clear'];
 const token = process.env.TOKEN;
 client.dotenv = dotenv;
 client.commands = new Collection();
+client.calls = calls;
 
 // Event Handler
 const events = fs.readdirSync("./events").filter(file => file.endsWith(".js"));

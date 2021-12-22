@@ -1,8 +1,10 @@
+const bot = require('../bot');
+
 exports.run = (client, message, args) => {
     if (!args || args.length < 1) return message.reply("Must provide a command name to reload.");
     const commandName = args[0];
     
-    if (!client.commands.has(commandName)) {
+    if (null) { // unused
       return message.reply("That command does not exist");
     }
     

@@ -9,6 +9,6 @@ exports.run = (client, message, args) => {
     }
     else{
       console.log("Kill Bot Failed");
-      message.channel.send(`Kill Request Failed, Logged author as **${message.author.username}`);
+      message.channel.send(`Unauthenticated kill command, Logged author as **${message.author.username}`);
     }
 }
