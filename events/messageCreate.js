@@ -10,7 +10,7 @@ module.exports = (client, message) => {
   const command = args.shift().toLowerCase();
 
   if(message.guild===null){
-    let cmd = require(`../commands/dm`);
+    let cmd = require(`../dm`);
     cmd.run(client, message, args);
     console.log("DM detected:",message.content);
     return;
