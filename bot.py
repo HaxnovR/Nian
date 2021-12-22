@@ -1,3 +1,10 @@
+"""
+Unused...
+For Reference
+"""
+
+
+
 import discord as dc
 import os
 import logging
