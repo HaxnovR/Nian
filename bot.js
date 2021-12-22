@@ -1,6 +1,5 @@
 const dotenv = require("dotenv").config({path:'.env'});
 const { Client, Intents, Collection} = require("discord.js");
-const { userInfo } = require("os");
 const fs = require("fs");
 
 const client = new Client({
@@ -9,17 +8,23 @@ const client = new Client({
 
 //Variables & Constants
 const token = process.env.TOKEN;
-const master_id = process.env.MASTER;
-const prefix = process.env.PREFIX;
-var grabbed;
 
 client.dotenv = dotenv;
+client.commands = new Collection();
+
+
+//get events
+const events = fs.readdirSync("./events").filter(file => file.endsWith(".js"));
+for (const file of events) {
+  const eventName = file.split(".")[0];
+  const event = require(`./events/${file}`);
+  client.on(eventName, event.bind(null, client));
+}
+
 
 //get commands
-client.commands = new Collection();
 const commands = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 for (const file of commands) {
-  // Get the command name from splitting the file
   const commandName = file.split(".")[0];
   const command = require(`./commands/${file}`);
 
@@ -27,17 +32,7 @@ for (const file of commands) {
   client.commands.set(command.name, command);
 }
 
-
-//get events
-const files = fs.readdirSync("./events").filter(file => file.endsWith(".js"));
-for (const file of files) {
-  // Split the file and get the event name
-  const eventName = file.split(".")[0];
-  // Require the file
-  const event = require(`./events/${file}`);
-  console.log(`Attempting to load Event ${eventName}`);
-  client.on(eventName, event.bind(null, client));
-}
+client.login(token);
 
 
 // client.on("ready", () => {
@@ -87,6 +82,4 @@ for (const file of files) {
 //       setTimeout(() => msg.delete(), 10000)
 //     })
 //   }
-// });
-
-client.login(token);
+// })

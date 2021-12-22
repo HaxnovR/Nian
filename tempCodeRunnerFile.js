@@ -1,1 +1,0 @@
-client.commands = new Collection();

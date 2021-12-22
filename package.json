@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/HaxnovR/temp-bot#readme",
   "dependencies": {
+    "@discordjs/collection": "^0.3.2",
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0"
   }
