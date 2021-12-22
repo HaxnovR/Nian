@@ -3,7 +3,7 @@ const fs = require("fs");
 const dotenv = require('dotenv').config({path:".env"});
 
 const client = new Client({
-  partials: ["CHANNEL"],
+  partials: ["CHANNEL"], 
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES]
 });
 
