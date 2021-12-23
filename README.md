@@ -2,4 +2,4 @@
 
 A Simple discord bot made with discord.js
 
-![jellybeam-nian-final](https://user-images.githubusercontent.com/60336295/147163790-d6bd2c1c-b329-42a4-8b95-edf221dbe8dd.jpg)
+<img src="https://user-images.githubusercontent.com/60336295/147240671-42d2a7bc-a9c8-48d1-8af1-763e1556dd66.png" width="480" height="390" align="right" />
