@@ -1,18 +1,21 @@
 const { Client, Intents, Collection } = require("discord.js");
 const fs = require("fs");
 const dotenv = require('dotenv').config({path:".env"});
+const logger = require('./clientLogs/logger')
+
 
 const client = new Client({
-  partials: ["CHANNEL"], 
+  partials: ["CHANNEL"],
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES]
 });
 
 // holds all available commands
-const calls = ['ping','echo','target','kill','reload','clear'];
+const calls = ['ping','echo','target','kill','reload','clear','mau'];
 const token = process.env.TOKEN;
 client.dotenv = dotenv;
 client.commands = new Collection();
 client.calls = calls;
+client.logger = logger;
 
 // Event Handler
 const events = fs.readdirSync("./events").filter(file => file.endsWith(".js"));
