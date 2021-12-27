@@ -1,4 +1,5 @@
 let { PythonShell } = require('python-shell');
+const logger = require("../clientLogs/logger");
 
 function getchat(data){
     let options = {
@@ -31,6 +32,7 @@ exports.run = (client, message, args) => {
         else{
         // console.log("Successful",results.toString());
         message.channel.send(results.toString());
+        logger.info(`Nian reply to dm : '${results.toString()}'`);
         }
     });
 }

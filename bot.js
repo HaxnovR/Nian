@@ -6,7 +6,8 @@ const logger = require('./clientLogs/logger')
 
 const client = new Client({
   partials: ["CHANNEL"],
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES]
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+  ws: { properties: { $browser: "Discord iOS" }}
 });
 
 // holds all available commands

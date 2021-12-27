@@ -13,7 +13,7 @@ module.exports = (client, message) => {
   if(message.guild===null && !message.author.bot){
     let cmd = require(`../commands/dm`);
     cmd.run(client, message, args);
-    logger.info(`DM Request ${message.author.username}#${message.author.discriminator} : ${message.content}`);
+    logger.info(`DM Request ${message.author.username}#${message.author.discriminator} : '${message.content}'`);
     return;
   }
   // Ignore all bots and non-prefix messages
