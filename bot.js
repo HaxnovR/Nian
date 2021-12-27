@@ -43,3 +43,4 @@ client.login(token);
 // |MASTER
 // |BOT_ID
 // |PREFIX
+// |spotify

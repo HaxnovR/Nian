@@ -21,6 +21,7 @@
     "@discordjs/collection": "^0.3.2",
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
+    "python-shell": "^3.0.1",
     "simple-node-logger": "^21.8.12"
   }
 }

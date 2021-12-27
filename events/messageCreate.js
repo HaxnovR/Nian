@@ -11,7 +11,7 @@ module.exports = (client, message) => {
   const command = args.shift().toLowerCase();
 
   if(message.guild===null && !message.author.bot){
-    let cmd = require(`../dm`);
+    let cmd = require(`../commands/dm`);
     cmd.run(client, message, args);
     logger.info(`DM Request ${message.author.username}#${message.author.discriminator} : ${message.content}`);
     return;

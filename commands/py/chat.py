@@ -7,10 +7,6 @@ import openai
 
 openai.api_key = os.getenv("api")
 
-def read_in():
-    lines = sys.stdin.readlines()
-    return json.loads(lines[0])
-
 def talk(question):
     response = openai.Completion.create(
       engine="davinci-instruct-beta-v3",
@@ -25,10 +21,10 @@ def talk(question):
     return str(reply)
 
 def main():
-    lines = read_in()
-    out = talk(lines)
-    #return the sum to the output stream
-    print(out)
+    data = sys.argv
+    data.pop(0)
+    query = " ".join(data)
+    print(talk(query))
 
 #start process
 if __name__ == '__main__':
