@@ -1,3 +1,4 @@
+const { DMChannel } = require('discord.js');
 let { PythonShell } = require('python-shell');
 const logger = require("../clientLogs/logger");
 
@@ -27,12 +28,30 @@ exports.run = (client, message, args) => {
 
     PythonShell.run("commands/py/chat.py",options,function(err,results){
         if(err){
-          console.log(err);
+            console.log(err);
         }
         else{
-        // console.log("Successful",results.toString());
-        message.channel.send(results.toString());
-        logger.info(`Nian reply to dm : '${results.toString()}'`);
+        console.log(results.toString().length);
+        console.log(results);
+        message.channel.sendTyping();
+        if(results.toString().length <= 50){
+            setTimeout(()=>{
+                message.channel.send(results.toString());
+            }, 1000);
+        }
+        if(results.toString().length > 50 && results.toString().length <= 130){
+            setTimeout(()=>{
+                message.channel.send(results.toString());
+            }, 1600);
+        }
+        if(results.toString().length > 130 && results.toString().length <= 300){
+            setTimeout(()=>{
+                message.channel.send(results.toString());
+            }, 2900);
+        }
+        if(results.toString().length > 130){
+            logger.info(`Nian reply to dm : '${results.toString()}'`);
+        }
         }
     });
 }
