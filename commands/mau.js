@@ -4,7 +4,7 @@ exports.run = (client, message, args) => {
 	async function fetchText(url) {
 		let response = await fetch(url);
 		let data = await response.json();
-		console.log(data.file);
+		console.log(data);
 		message.channel.send(data.file);
 	}
 	message.channel.send("Here's a Mau (^._.^)ﾉ");
