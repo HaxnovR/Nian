@@ -10,8 +10,5 @@ exports.run = (client, message, args) => {
     
     delete require.cache[require.resolve(`./${commandName}.js`)]; 
 
-    client.commands.delete(commandName);
-    const props = require(`./${commandName}.js`);
-    client.commands.set(commandName, props);
     message.reply(`The command ${commandName} has been reloaded`);
   };

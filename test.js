@@ -1,8 +1,5 @@
-const jikanjs = require("jikanjs");
+const color = require("color.js");
+// Or with different syntax:
 
-const search = async function(type,query) {
-	let data = (await jikanjs.search(type,query));
-	console.log(data.results[0].url);
-}
-search("anime","Qualidea");
-
+const col = color.average('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg', { amount: 1 })
+console.log(col)
