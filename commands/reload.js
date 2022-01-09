@@ -1,11 +1,19 @@
 const bot = require('../bot');
 
 exports.run = (client, message, args) => {
-    if (!args || args.length < 1) return message.reply("Must provide a command name to reload.");
+    if(message.author.id!=process.env.MASTER){
+      return;
+    }
+
+    if (!args || args.length < 1){
+      message.reply("Must provide a command name to reload.");
+      return;
+    }
     const commandName = args[0];
     
-    if (null) { // unused
-      return message.reply("That command does not exist");
+    if (!client.calls.includes(commandName)) {
+      message.reply("That command does not exist");
+      return;
     }
     
     delete require.cache[require.resolve(`./${commandName}.js`)]; 
