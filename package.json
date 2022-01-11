@@ -25,6 +25,7 @@
     "imgur": "^2.1.0",
     "jikanjs": "^0.7.0",
     "nekos-best.js": "^4.0.4",
+    "node-binance-api": "^0.13.1",
     "python-shell": "^3.0.1",
     "simple-node-logger": "^21.8.12"
   }
