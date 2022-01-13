@@ -1,4 +1,5 @@
 *.env
+test.js
 .eslintrc.json
 config.json
 test.py

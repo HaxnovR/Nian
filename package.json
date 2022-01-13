@@ -27,6 +27,7 @@
     "nekos-best.js": "^4.0.4",
     "node-binance-api": "^0.13.1",
     "python-shell": "^3.0.1",
-    "simple-node-logger": "^21.8.12"
+    "simple-node-logger": "^21.8.12",
+    "spotify-web-api-node": "^5.0.2"
   }
 }

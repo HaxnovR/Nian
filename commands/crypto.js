@@ -14,5 +14,9 @@ exports.run = (client, message, args) => {
             message.channel.send(`Current Price of **${data.symbol} = ${data.price.slice(0,-4)}**`);
         }
 	}
+    if(args[0]==null){
+        message.channel.send("specify a Coin/Token. Usage: `crypto <option>`, eg: crypto BTC");
+        return;
+    }
 	fetchText();
 }
