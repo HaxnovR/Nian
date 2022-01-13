@@ -1,39 +1,93 @@
 const fetch = require('node-fetch');
-const { ImgurClient } = require('imgur');
 const dotenv = require('dotenv').config({path:"../.env"});
+var SpotifyWebApi = require('spotify-web-api-node');
+const { MessageEmbed } = require("discord.js");
+
+var spotifyApi = new SpotifyWebApi({
+    clientId: process.env.spotify_id,
+    clientSecret: process.env.spotify_secret,
+  });
 
 exports.run = (client, message, args) => {
-    async function getSearch(){
-        let qry = (args.join(' '));
-        var query = encodeURIComponent(qry.trim())
-        let response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&market=ES&limit=4&offset=0`, {
-            method: 'GET',headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.spotify}`
+    spotifyApi.clientCredentialsGrant().then(
+        // NOTE
+        // All commands run in this function
+        function(data) {
+            console.log('The access token expires in ' + data.body['expires_in']);
+            console.log('The access token is ' + data.body['access_token']);
+            
+            // Save the access token so that it's used in future calls
+            spotifyApi.setAccessToken(data.body['access_token']);
+            
+            // Query
+            let qry = args.slice(1,args.length).join(" ");
+
+            // functions
+            async function argZero(){
+                message.channel.send(" Usage: `n.spotify <options> <query>`\nOptions:`search`,");
             }
-        });
-        let data = await response.json();
-        const embed = new MessageEmbed()
-  			.setColor("1DB954")
-  			.setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
-  			.setTitle(`Results for ${qry}`)
-  			.setThumbnail(data.results[0].image_url)
-			// Fields --->
-  			.addField(data.tracks[0].title,`\[[${data.tracks[0].mal_id}](${data.tracks.items[0].external_urls.spotify})`)
-  			.addField(data.tracks[1].title,`\[[${data.tracks[1].mal_id}](${data.tracks.items[1].external_urls.spotify})`)
-			.addField(data.tracks[2].title,`\[[${data.tracks[2].mal_id}](${data.tracks.items[2].external_urls.spotify})`)
-			.addField(data.tracks[3].title,`\[[${data.tracks[3].mal_id}](${data.tracks.items[3].external_urls.spotify})`)
-  			
-  			.setTimestamp()
-  			.setFooter("Data from Spotify", "https://upload.wikimedia.org/wikipedia/commons/7/7a/MyAnimeList_Logo.png");
-  			
-  			message.channel.send({ embeds: [embed] });
-		}
-	    console.log(JSON.stringify(data.tracks.items[0].external_urls.spotify, null, 2));
-        console.log(JSON.stringify(data.tracks.items[1].external_urls.spotify, null, 2));
-        console.log(JSON.stringify(data.tracks.items[2].external_urls.spotify, null, 2));
-        console.log(JSON.stringify(data.tracks.items[3].external_urls.spotify, null, 2));  
-    }
-    getSearch();
+            async function getSearch(){
+                let resp = await spotifyApi.searchTracks(qry,{ limit: 5, offset: 2 });
+                let dat = resp.body.tracks.items;
+                console.log(dat[0]);
+                
+                const embed = new MessageEmbed()
+                    .setColor("1DB954")
+                    .setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
+                    .setTitle(`Results for "${qry}"`)
+                    .setThumbnail(dat[0].album.images[0].url)
+                    .setTimestamp()
+                    .setFooter("Data from Spotify", "https://cdn-icons-png.flaticon.com/512/2111/2111624.png");
+                
+                dat.forEach(index => {
+                    let divider = '----------------------------';
+                    let names = [];
+                    index.artists.forEach(num => {
+                        names.push(num.name);
+                    });
+                    console.log(names.join(", "));
+                    // embed.addField(index.name , `\[[Link](${index.external_urls.spotify})\], Followers: \`${index.followers.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}\`\nGenres: \`${genres}\`\n${divider}`)
+                });
+                message.channel.send({ embeds: [embed] });
+            }
+            async function getArtist(){
+                let resp = await spotifyApi.searchArtists(qry,{limit: 4});
+                let dat = resp.body.artists.items;
+                console.log(dat[0].images[0].url);
+
+                const embed = new MessageEmbed()
+                    .setColor("1DB954")
+                    .setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
+                    .setThumbnail(dat[0].images[0].url)
+                    .setTitle(`Results for "${qry}"`)
+                    .setTimestamp()
+                    .setFooter("Data from Spotify", "https://cdn-icons-png.flaticon.com/512/2111/2111624.png");
+                      
+                // Field Builder
+                dat.forEach(index => {
+                    let divider = '----------------------------';
+                    let genres = index.genres.join(", ");
+                    embed.addField(index.name , `\[[Link](${index.external_urls.spotify})\], Followers: \`${index.followers.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}\`\nGenres: \`${genres}\`\n${divider}`)
+                })
+
+                message.channel.send({ embeds: [embed] });
+            }
+
+            // args check
+            if(args[0]==null){
+                argZero();
+                return;
+            }
+            if(args[0]=='search' && args[1] != null ? getSearch() : null);
+            if(args[0]=='artist' && args[1] != null ? getArtist() : null);
+            else argZero();
+        },
+    
+        function(err) {
+            console.log('Something went wrong when retrieving an access token', err);
+        }
+    );
 }
+
+
+
