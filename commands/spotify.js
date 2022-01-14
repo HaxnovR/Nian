@@ -29,6 +29,10 @@ exports.run = (client, message, args) => {
             async function getSearch(){
                 let resp = await spotifyApi.searchTracks(qry,{ limit: 5, offset: 2 });
                 let dat = resp.body.tracks.items;
+                if(dat.length==0){
+                    message.channel.send("No Results Found");
+                    return;
+                }
                 console.log(dat[0]);
                 
                 const embed = new MessageEmbed()
@@ -45,14 +49,18 @@ exports.run = (client, message, args) => {
                     index.artists.forEach(num => {
                         names.push(num.name);
                     });
-                    console.log(names.join(", "));
-                    // embed.addField(index.name , `\[[Link](${index.external_urls.spotify})\], Followers: \`${index.followers.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}\`\nGenres: \`${genres}\`\n${divider}`)
+                    embed.addField(index.name , `\[[Link](${index.external_urls.spotify})\], Album: \`${index.album.name}\`, Release Date: \`${index.album.release_date}\`
+                    Artists: \`${names.join(", ")}\`\n${divider}`);
                 });
                 message.channel.send({ embeds: [embed] });
             }
             async function getArtist(){
                 let resp = await spotifyApi.searchArtists(qry,{limit: 4});
                 let dat = resp.body.artists.items;
+                if(dat.length==0){
+                    message.channel.send("No Results Found");
+                    return;
+                }
                 console.log(dat[0].images[0].url);
 
                 const embed = new MessageEmbed()
@@ -72,14 +80,40 @@ exports.run = (client, message, args) => {
 
                 message.channel.send({ embeds: [embed] });
             }
+            async function getPlaylist(){
+                let resp = await spotifyApi.searchPlaylists(qry,{ limit: 5});
+                let dat = resp.body.playlists.items;
+                if(dat.length==0){
+                    message.channel.send("No Results Found");
+                    return;
+                }
+                console.log(dat[0]);
+
+                const embed = new MessageEmbed()
+                    .setColor("1DB954")
+                    .setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
+                    .setThumbnail(dat[0].images[0].url)
+                    .setTitle(`Results for "${qry}"`)
+                    .setTimestamp()
+                    .setFooter("Data from Spotify", "https://cdn-icons-png.flaticon.com/512/2111/2111624.png");
+                
+                dat.forEach(index => {
+                    let divider = '----------------------------';
+                    embed.addField(index.name , `\[[Link](${index.external_urls.spotify})\], Description: ${index.description}
+                    Tracks: \`${index.tracks.total}\`, Owner: [${index.owner.display_name}](${index.owner.external_urls.spotify})\n${divider}`)
+                })
+
+                message.channel.send({ embeds: [embed] });
+            }
 
             // args check
             if(args[0]==null){
                 argZero();
                 return;
             }
-            if(args[0]=='search' && args[1] != null ? getSearch() : null);
-            if(args[0]=='artist' && args[1] != null ? getArtist() : null);
+            if(args[0]=='search' || args[0]=='s' && args[1] != null ? getSearch() : null);
+            else if(args[0]=='playlist' || args[0]=='p' && args[1] != null ? getPlaylist() : null);
+            else if(args[0]=='artist' && args[1] != null ? getArtist() : null);
             else argZero();
         },
     
@@ -88,6 +122,3 @@ exports.run = (client, message, args) => {
         }
     );
 }
-
-
-
