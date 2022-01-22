@@ -24,7 +24,7 @@ exports.run = (client, message, args) => {
 
             // functions
             async function argZero(){
-                message.channel.send(" Usage: `n.spotify <options> <query>`\nOptions:`search`,");
+                message.channel.send(" Usage: `n.spotify <options> <query>`\nOptions:`search`,`artist`,`playlist`");
             }
             async function getSearch(){
                 let resp = await spotifyApi.searchTracks(qry,{ limit: 5, offset: 2 });
