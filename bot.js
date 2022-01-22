@@ -11,10 +11,10 @@ const client = new Client({
 });
 
 // holds all available commands
-const calls = ['ping','echo','target','kill','reload','clear','mau',
+const calls = ['ping','echo','kill','reload','clear','mau',
               'urlsh','dog','duck','uwu','owo','mal','crypto','upload',
               'spotify','trade'];
-const token = process.env.TOKEN2;
+const token = process.env.TOKEN;
 client.dotenv = dotenv;
 client.commands = new Collection();
 client.calls = calls;

@@ -44,6 +44,32 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
   			
   		message.channel.send({ embeds: [embed] });
 	}
+    async function getAll() {
+        let data = await binance.futuresPositionRisk();
+        let total = 0;
+        for(i=0;i<148;i++){
+            dict[`${data[i].symbol}`] = i;
+        }
+        // let sym = dict[arg];
+        const embed = new MessageEmbed()
+  			.setTitle(`Current Futures Positions:`)
+            .setThumbnail(logo)
+  			.setTimestamp()
+  			.setFooter("Data from Binance");
+
+        for(i=0;i<148;i++){
+            if(data[i].entryPrice != 0){
+                embed.addField(data[i].symbol,`\`${data[i].unRealizedProfit}\``);
+                total += Number(data[i].unRealizedProfit);
+            }
+        }
+        embed.addField("Total PnL",`\`\`\`${total}\`\`\``);
+        var col = '';
+        if(total>0 ? col = '2fcc41' : col = 'f23333')
+        embed.setColor(`${col}`);
+  			
+  		message.channel.send({ embeds: [embed] });
+	}
     async function getBal() {
         let data = await binance.futuresBalance();
         console.info(data[6]);
@@ -59,53 +85,6 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
   		message.channel.send({ embeds: [embed] });
 		
 	}
-    async function getPosfix(arg) {
-        let data = await binance.futuresPositionRisk();
-        for(i=0;i<148;i++){
-            dict[`${data[i].symbol}`] = i;
-        }
-        let sym = dict[arg];
-        var col = '';
-        if(data[sym].unRealizedProfit>0 ? col = '2fcc41' : col = 'f23333')
-        console.log(data[sym]);
-        const embed = new MessageEmbed()
-  			.setColor(`${col}`)
-  			.setTitle(`Current Futures Position in ${arg}`)
-            .setThumbnail(logo)
-			// Fields --->
-            .addField(`Margin: \$${data[sym].isolatedMargin.slice(0,-6)} | Leverage: ${data[sym].leverage}x | ${data[sym].marginType}`,
-            `\`\`\`json
-PnL: \$${data[sym].unRealizedProfit.slice(0,-6)}
-            
-Entry Price: ${data[sym].entryPrice}
-
-Current Price: ${data[sym].markPrice}
-
-Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
-            `)
-  			.setTimestamp()
-  			.setFooter("Data from Binance");
-  		
-
-        message.channel.send({ embeds: [embed] }).then(msg => {
-            let interval = setInterval (() => {
-                async function getPseudo(){
-                    let dat = await binance.futuresPositionRisk();
-                    let emb = new MessageEmbed()
-                          .setColor(`${col}`)
-                          .setTitle(`Current Futures Position in ${arg}`)
-                        .setThumbnail(logo)
-                        // Fields --->
-                        .addField(`Margin: \$${dat[sym].isolatedMargin.slice(0,-6)} | Leverage: ${dat[sym].leverage}x | ${dat[sym].marginType}`,
-                        `\`\`\`json\nPnL: \$${dat[sym].unRealizedProfit.slice(0,-6)}\`\`\``)
-                          .setTimestamp()
-                          .setFooter("Data from Binance");
-                    msg.edit({ embeds: [emb] });
-                }
-                getPseudo();
-            }, 1000);
-        });
-    }
 
         
 
@@ -114,14 +93,14 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
         message.channel.send("Usage `n.trade <option>`");
         return;
     }
-    if(args[0] == 'pos'){
+    if(args[0] == 'pos' && args[1] != null){
         getPos(args[1].toUpperCase());
+    }
+    if(args[0] == 'pos' && args[1] == null){
+        getAll();
     }
     if(args[0] == 'bal'){
         getBal();
-    }
-    if(args[0] == 'posfix'){
-        getPosfix(args[1].toUpperCase());
     }
 }
 
