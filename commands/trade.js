@@ -9,10 +9,15 @@ const { MessageEmbed } = require("discord.js");
 
 var dict = {}
 let channels = process.env.apchannels.split(", ");
+let traders = process.env.traders.split(", ");
 
 exports.run = (client, message, args) => {
-    
+    if(!traders.includes(message.author.id)){
+        message.reply("**Unauthorized User!**");
+        return;
+    }
     if(!channels.includes(message.channel.id)){
+        message.reply("**Unauthorized Channel!**");
         return;
     }
 	async function getPos(arg) {
@@ -22,8 +27,9 @@ exports.run = (client, message, args) => {
         }
         let sym = dict[arg];
         var col = '';
-        if(data[sym].unRealizedProfit>0 ? col = '2fcc41' : col = 'f23333')
-        console.log(data[sym]);
+        if(data[sym].unRealizedProfit>0 ? col = '2fcc41' : col = 'f23333');
+        console.log(sym);
+        console.log(arg);
         const embed = new MessageEmbed()
   			.setColor(`${col}`)
   			.setTitle(`Current Futures Position in ${arg}`)
@@ -41,6 +47,23 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
             `)
   			.setTimestamp()
   			.setFooter("Data from Binance");
+
+        try{
+            let data = await binance.futuresOpenOrders(arg);
+            console.log(data[0].stopPrice);
+            console.log(data[1].stopPrice);
+            if(data[0].type == 'STOP_MARKET'){
+                embed.addField("SL",`\`${data[0].stopPrice}\``,true);
+                embed.addField("TP",`\`${data[1].stopPrice}\``,true);
+            }
+            else{
+                embed.addField("SL",`\`${data[1].stopPrice}\``,true);
+                embed.addField("TP",`\`${data[0].stopPrice}\``,true);
+            }
+        }
+        catch(err){
+            console.error(err.message);
+        }
   			
   		message.channel.send({ embeds: [embed] });
 	}
@@ -72,19 +95,47 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
 	}
     async function getBal() {
         let data = await binance.futuresBalance();
-        console.info(data[6]);
         const embed = new MessageEmbed()
   			.setColor("f4bc0c")
-  			.setTitle(`Current Balance USDT <:tetherusdt:930403003737968681>`)
+  			.setTitle(`Current Balance BUSD`)
 			// Fields --->
-            .addField('Total Balance(incl P&L):',data[6].balance)
-            .addField('Available Balance:',data[6].availableBalance)
+            .addField('Total Balance(incl P&L):',data[8].balance)
+            .addField('Available Balance:',data[8].availableBalance)
   			.setTimestamp()
   			.setFooter("Data from Binance", logo);
   			
   		message.channel.send({ embeds: [embed] });
 		
 	}
+    async function closePos(arg) {
+        const embed = new MessageEmbed()
+            .setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
+  			.setColor("f4bc0c")
+  			.setTitle(`Vote to Close Position in ${arg}`)
+			.setDescription("2/3rd Votes are required to execute command\nReact below with ✅ to Vote.")
+  			.setTimestamp()
+            .setFooter("This Vote will expire in 120 seconds", logo);
+  			
+        const expired = new MessageEmbed().setTitle("Vote Expired!");
+  		message.channel.send({ embeds: [embed] }).then((msg) => {
+            // msg.react('✅');
+        
+            // console.log(msg.reactions);
+            // setTimeout(() => {
+            //     msg.edit({ embeds: [expired] });
+            //     return;
+            // }, 15000);
+          });
+        const filter = (reaction, user) => {
+            return reaction.emoji.name == '✅';
+        };
+        
+        message.awaitReactions({ filter, max: 4, time: 10000, errors: ['time'] })
+            .then(collected => console.log(collected.size))
+            .catch(collected => {
+                console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
+            });
+    }
 
         
 
@@ -101,6 +152,9 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
     }
     if(args[0] == 'bal'){
         getBal();
+    }
+    if(args[0] == 'exit' && args[1] != null){
+        closePos(args[1].toUpperCase());
     }
 }
 

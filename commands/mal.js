@@ -3,79 +3,86 @@
 
 const { MessageEmbed } = require("discord.js");
 const jikanjs = require("jikanjs");
+jikanjs.settings.version = 3;
 
-let type = ['anime', 'manga', 'person', 'character'];
+let opt = ['anime', 'manga', 'person', 'character'];
 
 exports.run = (client, message, args) => {
 	const search = async function(type,query) {
+		if(args[1]==null || !opt.includes(args[1])){
+			message.channel.send("**Usage : **`mal search <option> <query>`\nOptions: `anime`,`manga`,`person`,`character`");
+			return;
+		}
 		let name = args.slice(2,args.length).join(" ");
-		let data = (await jikanjs.search(type,name));		
+		let data = (await jikanjs.search(type,name));
+		let len = 0;		
 		console.log(`len = ${data.results.length}`);
-		console.log(data.results);
-		if(data.results.length==0){
-			message.channel.send("No Result Found");
-			return;
-		}
-		if(data.results.length<=5){
-			const embed = new MessageEmbed()
-  			.setColor("2e51a2")
-  			.setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
-  			.setTitle(`Results for ${name}`)
-  			.setImage(data.results[0].image_url)
-			// Fields --->
-  			.addField(data.results[0].name,`\[[${data.results[0].mal_id}](${data.results[0].url})\]`)
-
-  			.setTimestamp()
-  			.setFooter("Data from MyAnimeList", "https://upload.wikimedia.org/wikipedia/commons/7/7a/MyAnimeList_Logo.png");
-  			
-  			message.channel.send({ embeds: [embed] });
-			return;
-		}
-		if(args[1]=="person" || args[1]=="character" && data.results.length>4){
-			const embed = new MessageEmbed()
-  			.setColor("2e51a2")
-  			.setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
-  			.setTitle(`Results for ${name}`)
-  			.setThumbnail(data.results[0].image_url)
-			// Fields --->
-  			.addField(data.results[0].name,`\[[${data.results[0].mal_id}](${data.results[0].url})\]`)
-			.addField(data.results[1].name,`\[[${data.results[1].mal_id}](${data.results[1].url})\]`)
-			.addField(data.results[2].name,`\[[${data.results[2].mal_id}](${data.results[2].url})\]`)
-			.addField(data.results[3].name,`\[[${data.results[3].mal_id}](${data.results[3].url})\]`)
-			.addField(data.results[4].name,`\[[${data.results[4].mal_id}](${data.results[4].url})\]`)
-  			
-  			.setTimestamp()
-  			.setFooter("Data from MyAnimeList", "https://upload.wikimedia.org/wikipedia/commons/7/7a/MyAnimeList_Logo.png");
-  			
-  			message.channel.send({ embeds: [embed] });
-		}
-		else{
 		const embed = new MessageEmbed()
   			.setColor("2e51a2")
   			.setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
   			.setTitle(`Results for ${name}`)
   			.setThumbnail(data.results[0].image_url)
-			// Fields --->
-  			.addField(data.results[0].title,`\[[${data.results[0].mal_id}](${data.results[0].url})\] | \`${data.results[0].type}\` \`Episodes: ${data.results[0].episodes}\` \`Score: ${data.results[0].score}\`\nSynopsis: ${data.results[0].synopsis}`)
-  			.addField(data.results[1].title,`\[[${data.results[1].mal_id}](${data.results[1].url})\] | \`${data.results[1].type}\` \`Episodes: ${data.results[1].episodes}\` \`Score: ${data.results[1].score}\`\nSynopsis: ${data.results[1].synopsis}`)
-			.addField(data.results[2].title,`\[[${data.results[2].mal_id}](${data.results[2].url})\] | \`${data.results[2].type}\` \`Episodes: ${data.results[2].episodes}\` \`Score: ${data.results[2].score}\`\nSynopsis: ${data.results[2].synopsis}`)
-			.addField(data.results[3].title,`\[[${data.results[3].mal_id}](${data.results[3].url})\] | \`${data.results[3].type}\` \`Episodes: ${data.results[3].episodes}\` \`Score: ${data.results[3].score}\`\nSynopsis: ${data.results[3].synopsis}`)
-			.addField(data.results[4].title,`\[[${data.results[4].mal_id}](${data.results[4].url})\] | \`${data.results[4].type}\` \`Episodes: ${data.results[4].episodes}\` \`Score: ${data.results[4].score}\`\nSynopsis: ${data.results[4].synopsis}`)
-  			
   			.setTimestamp()
   			.setFooter("Data from MyAnimeList", "https://upload.wikimedia.org/wikipedia/commons/7/7a/MyAnimeList_Logo.png");
   			
+		if(data.results.length<5)len = data.results.length;
+		if(data.results.length>=5)len = 5;
+		if(data.results.length==0){
+			message.channel.send("No Result Found");
+			return;
+		}
+		if(args[1]=="person" || args[1]=="character"){
+			data.results.slice(0,len).forEach(element => {
+				embed.addField(element.name,`\[[${element.mal_id}](${element.url})\]`);
+				console.log(element.name);
+			});
+  			message.channel.send({ embeds: [embed] });
+		}
+		if(args[1]=="anime" || args[1]=="manga"){
+			const embed = new MessageEmbed()
+			
+			data.results.slice(0,len).forEach(element => {
+				embed.addField(element.title,`\[[${element.mal_id}](${element.url})\] | \`${element.type}\` \`Episodes: ${element.episodes}\` \`Score: ${element.score}\`\nSynopsis: ${element.synopsis}`);
+				console.log(element.name);
+			});
   			message.channel.send({ embeds: [embed] });
 		}
 	}
+	const user = async function(query) {
+		if(args[1]==null){
+			message.channel.send("**Enter a Username**");
+			return;
+		}
+		let name = args[1];
+		let data = (await jikanjs.loadUser(name));
+		let len = 0;
+		console.log(data.manga_stats);
+		const embed = new MessageEmbed()
+  			.setColor("2e51a2")
+			.setTitle(`User: ${name}`)
+  			.setThumbnail(data.image_url)
+  			.setTimestamp()
+  			.setFooter("Data from MyAnimeList", "https://upload.wikimedia.org/wikipedia/commons/7/7a/MyAnimeList_Logo.png")
+			.addField("Anime Stats", `Days Watched: ${data.anime_stats.days_watched}\nMean Score: ${data.anime_stats.mean_score}\nWatching: ${data.anime_stats.watching}\nCompleted: ${data.anime_stats.completed}\nOn Hold: ${data.anime_stats.on_hold}\nPlan to Watch: ${data.anime_stats.plan_to_watch}\nTotal Entries: ${data.anime_stats.total_entries}\nRewatched: ${data.anime_stats.rewatched}\nEpisodes: ${data.anime_stats.episodes_watched}`, true )
+			.addField('Inline field title', 'Some value here', true )
+		
+		message.channel.send({ embeds: [embed] });
+	}
+	const ArgZero = async function(){
+		message.channel.send("**My Anime List Database**\nUsage : `mal <option> <query>` \n*Options:* `search`");
+	}
+
 	if(args[0]==null){
-		message.channel.send(`**My Anime List Database**\nUsage : \`mal <type> <query>\` \n *type:* \`anime, manga, person, character\``);
+		ArgZero();
 		return;
 	}
-	if(args[0]==="search"){
+	if(args[0]=="search"){
 		search(args[1],args[2]);
 	}
+	if(args[0]=="user"){
+		user(args[1]);
+	}
 	else{
-		message.channel.send(`**INVALID OPTION!** \n *Available Options:* \` \``);
+		ArgZero();
 	}
 }
