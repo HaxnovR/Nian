@@ -122,7 +122,8 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
         
             // console.log(msg.reactions);
             // setTimeout(() => {
-            //     msg.edit({ embeds: [expired] });
+            //     msg.edit({ embeds: [expired] });                       
+                                                          // TODO
             //     return;
             // }, 15000);
           });
