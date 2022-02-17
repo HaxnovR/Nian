@@ -6,7 +6,7 @@ const { MessageEmbed } = require("discord.js");
 var spotifyApi = new SpotifyWebApi({
     clientId: process.env.spotify_id,
     clientSecret: process.env.spotify_secret,
-  });
+});
 
 exports.run = (client, message, args) => {
     spotifyApi.clientCredentialsGrant().then(

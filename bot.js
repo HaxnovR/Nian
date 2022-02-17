@@ -13,7 +13,11 @@ const client = new Client({
 // holds all available commands
 const calls = ['help','ping','echo','kill','reload','clear','mau',
               'urlsh','dog','duck','uwu','owo','mal','crypto','upload',
+<<<<<<< HEAD
               'spotify','trade','av'];
+=======
+              'spotify','trade'];
+>>>>>>> 8f5d88f7063a39d2782dcf688947f7f138ae1064
 const token = process.env.TOKEN;
 client.dotenv = dotenv;
 client.commands = new Collection();
