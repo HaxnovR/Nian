@@ -6,6 +6,7 @@ const binance = new Binance().options({
   });
 const logo = "https://public.bnbstatic.com/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png"
 const { MessageEmbed } = require("discord.js");
+const footer = {text:"Data from Binance",iconURL:logo};
 
 var dict = {}
 let channels = process.env.apchannels.split(", ");
@@ -46,7 +47,7 @@ Current Price: ${data[sym].markPrice}
 Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
             `)
   			.setTimestamp()
-  			.setFooter("Data from Binance");
+  			.setFooter(footer);
 
         try{
             let data = await binance.futuresOpenOrders(arg);
@@ -78,7 +79,7 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
   			.setTitle(`Current Futures Positions:`)
             .setThumbnail(logo)
   			.setTimestamp()
-  			.setFooter("Data from Binance");
+  			.setFooter(footer);
 
         for(i=0;i<148;i++){
             if(data[i].entryPrice != 0){
@@ -97,13 +98,12 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
         let data = await binance.futuresBalance();
         const embed = new MessageEmbed()
   			.setColor("f4bc0c")
-  			.setTitle(`Current Balance BUSD`)
-			// Fields --->
-            .addField('Total Balance(incl P&L):',data[8].balance)
-            .addField('Available Balance:',data[8].availableBalance)
+  			.setTitle(`Current Balance USDT`)
+			// Fields ---> // 6=>USDT , 8=>BUSD
+            .addField('Total Balance(incl P&L):',data[6].balance)
+            .addField('Available Balance:',data[6].availableBalance)
   			.setTimestamp()
-  			.setFooter("Data from Binance", logo);
-  			
+  			.setFooter(footer);
   		message.channel.send({ embeds: [embed] });
 		
 	}

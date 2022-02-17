@@ -11,10 +11,10 @@ const client = new Client({
 });
 
 // holds all available commands
-const calls = ['ping','echo','kill','reload','clear','mau',
+const calls = ['help','ping','echo','kill','reload','clear','mau',
               'urlsh','dog','duck','uwu','owo','mal','crypto','upload',
-              'spotify','trade'];
-const token = process.env.TOKEN2;
+              'spotify','trade','av'];
+const token = process.env.TOKEN;
 client.dotenv = dotenv;
 client.commands = new Collection();
 client.calls = calls;
@@ -29,7 +29,7 @@ for (const file of events) {
 }
 
 // Not Command Handler!!
-// Verifies listed commands
+// Verifies listed command files
 const commands = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 for (const file of commands) {
   const commandName = file.split(".")[0];

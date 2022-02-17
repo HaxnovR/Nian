@@ -1,6 +1,3 @@
-// use switch case
-// add embeds
-
 const { MessageEmbed } = require("discord.js");
 const jikanjs = require("jikanjs");
 jikanjs.settings.version = 3;
