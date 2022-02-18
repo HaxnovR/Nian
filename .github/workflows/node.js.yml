@@ -6,6 +6,7 @@ name: Node.js CI
 env:
   TOKEN: ${{ secrets.TOKEN }}
   PREFIX: ${{ secrets.PREFIX }}
+  MASTER: ${{ secrets.MASTER }}
 
 on:
   push:
