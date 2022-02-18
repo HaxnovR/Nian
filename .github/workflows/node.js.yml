@@ -29,6 +29,4 @@ jobs:
         cache: 'npm'
       env:
         TOKEN: ${{ secrets.TOKEN }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    - run: echo ${{ secrets.TOKEN }}
