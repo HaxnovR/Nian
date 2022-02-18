@@ -4,7 +4,7 @@
 name: Node.js CI
 
 env:
-  TEST: ${{ secrets.TEST }}
+  TOKEN: ${{ secrets.TOKEN }}
 
 on:
   push:
@@ -30,4 +30,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: node test.js
+    - run: npm test
