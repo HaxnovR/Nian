@@ -1,0 +1,3 @@
+[submodule "commands/py/nianData"]
+	path = commands/py/nianData
+	url = https://github.com/HaxnovR/nianData
