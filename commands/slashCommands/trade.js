@@ -14,11 +14,11 @@ let traders = process.env.traders.split(", ");
 exports.run = async (client, interaction, options) => {
     let opt = options.data[0]?.options[0] || 'null';
     if(!traders.includes(interaction.user.id)){
-        message.reply("**Unauthorized User!**");
+        interaction.reply("**Unauthorized User!**");
         return;
     }
     if(!channels.includes(interaction.channel.id)){
-        message.reply("**Unauthorized Channel!**");
+        interaction.reply("**Unauthorized Channel!**");
         return;
     }
 
