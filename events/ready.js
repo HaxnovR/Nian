@@ -16,15 +16,15 @@ ________________________________________________________________________________
 
     // Load Slash Commands
     let slash;
-    const guild = client.guilds.cache.get('920947659232137236');
+    const guild = client.guilds.cache.get('544222557843488778');
 
     guild.commands.fetch()
   .then(commands => console.log(commands));
 
     //global
-    // slash = client.application.commands;
+    slash = client.application.commands;
     //development
-    slash = guild.commands;
+    nios = guild.commands;
     guild.commands.set([]);
     client.application.commands.set([]);
 
@@ -50,7 +50,7 @@ ________________________________________________________________________________
             }
         ]
     })
-    slash.create({
+    nios.create({
         name: 'trade',
         description: 'binance futures trading',
         options: [
