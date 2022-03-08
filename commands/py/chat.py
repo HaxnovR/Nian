@@ -9,7 +9,7 @@ openai.api_key = os.getenv("api")
 
 def talk(question):
     response = openai.Completion.create(
-      engine="davinci-instruct-beta-v3",
+      engine="davinci",
       prompt=question,
       temperature=0.5,
       max_tokens=150,
@@ -23,7 +23,7 @@ def talk(question):
 
 def ask(question):
     response = openai.Completion.create(
-      engine="davinci-instruct-beta-v3",
+      engine="davinci",
       prompt=question,
       temperature=0,
       max_tokens=100,

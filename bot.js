@@ -1,4 +1,5 @@
-const { Client, Intents, Collection } = require("discord.js");
+const { Client, Intents } = require("discord.js");
+const Discord = require('discord.js');
 const fs = require("fs");
 const dotenv = require('dotenv').config({path:".env"});
 const logger = require('./clientLogs/logger')
@@ -10,15 +11,21 @@ const client = new Client({
   ws: { properties: { $browser: "Discord iOS" }}
 });
 
+const help_footer = {
+  text:"To get list of all commands use n.help",
+}
+
 // holds all available commands
 const calls = ['help','ping','echo','kill','reload','clear','mau',
               'urlsh','dog','duck','uwu','owo','mal','crypto','upload',
               'spotify','trade','av'];
+const slashCalls = ['av','ping','trade'];
 const token = process.env.TOKEN;
 client.dotenv = dotenv;
-client.commands = new Collection();
 client.calls = calls;
+client.slashCalls = slashCalls;
 client.logger = logger;
+client.help_footer = help_footer;
 
 // Event Handler
 const events = fs.readdirSync("./events").filter(file => file.endsWith(".js"));
@@ -30,8 +37,8 @@ for (const file of events) {
 
 // Not Command Handler!!
 // Verifies listed command files
-const commands = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-for (const file of commands) {
+const command = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+for (const file of command) {
   const commandName = file.split(".")[0];
   console.log(`Loading ${commandName}`);
 }

@@ -11,25 +11,40 @@ var dict = {}
 let channels = process.env.apchannels.split(", ");
 let traders = process.env.traders.split(", ");
 
-exports.run = (client, message, args) => {
-    if(!traders.includes(message.author.id)){
+exports.run = async (client, interaction, options) => {
+    let opt = options.data[0]?.options[0] || 'null';
+    if(!traders.includes(interaction.user.id)){
         message.reply("**Unauthorized User!**");
         return;
     }
-    if(!channels.includes(message.channel.id)){
+    if(!channels.includes(interaction.channel.id)){
         message.reply("**Unauthorized Channel!**");
         return;
     }
-	async function getPos(arg) {
+
+    if(options.data[0].name == 'bal'){
+        let data = await binance.futuresBalance();
+        const embed = new MessageEmbed()
+  			.setColor("f4bc0c")
+  			.setTitle(`Current Balance USDT`)
+			// Fields ---> // 6=>USDT , 8=>BUSD
+            .addField('Total Balance(incl P&L):',data[6].balance)
+            .addField('Available Balance:',data[6].availableBalance)
+  			.setTimestamp()
+  			.setFooter(footer);
+  		interaction.reply({ embeds: [embed] });
+    }
+
+    if(options.data[0].name == 'pos' && opt !== 'null'){
         let data = await binance.futuresPositionRisk();
         for(i=0;i<148;i++){
             dict[`${data[i].symbol}`] = i;
         }
+        let arg = `${opt.value}usdt`.toUpperCase();
+        console.log(arg);
         let sym = dict[arg];
         var col = '';
         if(data[sym].unRealizedProfit>0 ? col = '2fcc41' : col = 'f23333');
-        console.log(sym);
-        console.log(arg);
         const embed = new MessageEmbed()
   			.setColor(`${col}`)
   			.setTitle(`Current Futures Position in ${arg}`)
@@ -64,10 +79,12 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
         catch(err){
             console.error(err.message);
         }
-  			
-  		message.channel.send({ embeds: [embed] });
-	}
-    async function getAll() {
+        interaction.reply({
+            embeds: [embed]
+        })
+        return;
+    }
+    if(options.data[0].name == 'pos' && opt == 'null'){
         let data = await binance.futuresPositionRisk();
         let total = 0;
         for(i=0;i<148;i++){
@@ -90,77 +107,10 @@ Liquidation Price: ${data[sym].liquidationPrice}\`\`\`
         var col = '';
         if(total>0 ? col = '2fcc41' : col = 'f23333')
         embed.setColor(`${col}`);
-  			
-  		message.channel.send({ embeds: [embed] });
-	}
-    async function getBal() {
-        let data = await binance.futuresBalance();
-        const embed = new MessageEmbed()
-  			.setColor("f4bc0c")
-  			.setTitle(`Current Balance USDT`)
-			// Fields ---> // 6=>USDT , 8=>BUSD
-            .addField('Total Balance(incl P&L):',data[6].balance)
-            .addField('Available Balance:',data[6].availableBalance)
-  			.setTimestamp()
-  			.setFooter(footer);
-  		message.channel.send({ embeds: [embed] });
-		
-	}
-    async function closePos(arg) {
-        const embed = new MessageEmbed()
-            .setAuthor(`Requested by ${message.author.username}${message.author.discriminator}`,message.author.displayAvatarURL())
-  			.setColor("f4bc0c")
-  			.setTitle(`Vote to Close Position in ${arg}`)
-			.setDescription("2/3rd Votes are required to execute command\nReact below with ✅ to Vote.")
-  			.setTimestamp()
-            .setFooter("This Vote will expire in 120 seconds", logo);
-  			
-        const expired = new MessageEmbed().setTitle("Vote Expired!");
-  		message.channel.send({ embeds: [embed] }).then((msg) => {
-            // msg.react('✅');
-        
-            // console.log(msg.reactions);
-            // setTimeout(() => {
-            //     msg.edit({ embeds: [expired] });                       
-                                                          // TODO
-            //     return;
-            // }, 15000);
-          });
-        const filter = (reaction, user) => {
-            return reaction.emoji.name == '✅';
-        };
-        
-        message.awaitReactions({ filter, max: 4, time: 10000, errors: ['time'] })
-            .then(collected => console.log(collected.size))
-            .catch(collected => {
-                console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
-            });
-    }
 
-        
-
-    // --------------------------------------------
-    if(args[0]==null){
-        message.channel.send("Usage `n.trade <option>`");
+        interaction.reply({
+            embeds: [embed]
+        })
         return;
     }
-    if(args[0] == 'pos' && args[1] != null){
-        getPos(args[1].toUpperCase());
-    }
-    if(args[0] == 'pos' && args[1] == null){
-        getAll();
-    }
-    if(args[0] == 'bal'){
-        getBal();
-    }
-    if(args[0] == 'exit' && args[1] != null){
-        closePos(args[1].toUpperCase());
-    }
 }
-
-/*
-BTC 123
-ETH 21
-SOL 122
-BNB 14
-*/

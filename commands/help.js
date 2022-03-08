@@ -28,7 +28,7 @@ exports.run = (client, message, args) => {
     async function defHelp(){
         const embed = new MessageEmbed();
         embed.setTitle("Nian Commands");
-        embed.setDescription("To get detailed info on a command use \n`help <command name>`")
+        embed.setDescription("To get detailed info on a command use \n`n.<command name> help`")
         embed.setImage(nianImg,100);
         embed.addField("Images:", fieldImages);
         embed.addField("Utility:", fieldUtil);
@@ -45,7 +45,7 @@ exports.run = (client, message, args) => {
         defHelp();
     }
     else{
-        message.channel.send("Incomplete command package");
+        message.channel.send("To get detailed info on a command use \n`n.<command name> help`");
     }
     // export default defHelp;
 }

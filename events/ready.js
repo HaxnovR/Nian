@@ -1,4 +1,6 @@
 const logger = require('../clientLogs/logger');
+const Discord = require('discord.js');
+
 logger.setLevel('all');
 
 module.exports = (client) => {
@@ -10,5 +12,66 @@ ________________________________________________________________________________
 
     client.user.setActivity("Your DMs", {
     type: "LISTENING",
-  });
-  }
+    });
+
+    // Load Slash Commands
+    let slash;
+    const guild = client.guilds.cache.get('920947659232137236');
+
+    guild.commands.fetch()
+  .then(commands => console.log(commands));
+
+    //global
+    // slash = client.application.commands;
+    //development
+    slash = guild.commands;
+    guild.commands.set([]);
+    client.application.commands.set([]);
+
+    slash.create({
+        name: 'ping',
+        description: 'Pings the bot'
+    })
+    slash.create({
+        name: 'av',
+        description: 'Get the avatar of a user',
+        options: [
+            {
+                name: 'user',
+                required: true,
+                description: 'get avatar of mentioned user',
+                type: Discord.Constants.ApplicationCommandOptionTypes.MENTIONABLE
+            },
+            {
+                name: 'hidden',
+                required: false,
+                description: 'only you can see the message if TRUE',
+                type: Discord.Constants.ApplicationCommandOptionTypes.BOOLEAN
+            }
+        ]
+    })
+    slash.create({
+        name: 'trade',
+        description: 'binance futures trading',
+        options: [
+            {
+                name: 'pos',
+                description: 'get the balance of the futures account',
+                type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                options: [
+                    {
+                        name: 'symbol',
+                        description: 'symbol, eg: (btc, eth, SOL)',
+                        required: false,
+                        type: Discord.Constants.ApplicationCommandOptionTypes.STRING
+                    }
+                ]
+            },
+            {
+                name: 'bal',
+                description: 'get the balance of the futures account',
+                type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND
+            }
+        ]
+    })
+}
