@@ -1,32 +1,40 @@
 const logger = require('../clientLogs/logger');
 const Discord = require('discord.js');
+const fetch = require('node-fetch');
 
 logger.setLevel('all');
 
-module.exports = (client) => {
+module.exports = async (client) => {
     console.log(`Ready to serve in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.users.cache.size} users.`);
     logger.info(`\n\n\n-------------------------------------- NEW INSTANCE ---------------------------------------\n
     \t\t\twebSocket Connection successful, Client Logged in at ${new Date().toLocaleTimeString()}
     \t\t\ton channels: ${client.channels.cache.size} | on Servers: ${client.guilds.cache.size} | for Users: ${client.guilds.cache.size}
 ____________________________________________________________________________________________________________`);
 
-    client.user.setActivity("Your DMs", {
-    type: "LISTENING",
-    });
 
     // Load Slash Commands
     let slash;
-    const guild = client.guilds.cache.get('544222557843488778');
+    let serverID = '';
+    let mode = client.mode // prod or dev
 
-    guild.commands.fetch()
-  .then(commands => console.log(commands));
+    // NIOS = 544222557843488778
+    // Dev = 920947659232137236
 
-    //global
-    slash = client.application.commands;
-    //development
-    nios = guild.commands;
+    // development //
+    if(mode == 'dev'){
+        serverID = '920947659232137236';
+    }
+    // production //
+    if(mode == 'prod'){
+        serverID = '544222557843488778';
+    }
+
+    let guild = client.guilds.cache.get(serverID);
+    guild.commands.fetch().then(commands => console.log(commands));
     guild.commands.set([]);
     client.application.commands.set([]);
+    if(mode == 'prod' ? slash = client.application.commands : slash = guild.commands);
+    let nios = guild.commands;
 
     slash.create({
         name: 'ping',
@@ -50,6 +58,7 @@ ________________________________________________________________________________
             }
         ]
     })
+    // change slash to nios in production
     nios.create({
         name: 'trade',
         description: 'binance futures trading',
@@ -74,4 +83,77 @@ ________________________________________________________________________________
             }
         ]
     })
+    slash.create({
+        name: 'help',
+        description: 'Get a list of all the available commands (≧∀≦)ゞ',
+        options: [
+            {
+                name: 'hidden',
+                description: 'only you can see this message if TRUE',
+                type: Discord.Constants.ApplicationCommandOptionTypes.BOOLEAN
+            }
+        ]
+    })
+
+    // ---------ACTIVITY-----------
+    let startTime = Date.now();
+    let x = 1;
+    let btc,eth,bnb = {};
+    let btcdat,ethdat,bnbdat = {};
+    setInterval(async () => {
+        switch (x) {
+            case 1:
+                client.user.setActivity("n.help", {
+                    type: "LISTENING",
+                });
+                btc = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`);
+                btcdat = await btc.json();
+                eth = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT`);
+                ethdat = await eth.json();
+                bnb = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT`);
+                bnbdat = await bnb.json();
+                x++;
+                console.log('Elapsed :',(Date.now() - startTime)/1000,'sec | Status Variable =',true,btcdat);
+                break;
+            case 2:
+                client.user.setActivity(`BTC : ${btcdat.price.slice(0,-6)}`, {
+                    type: "WATCHING",
+                });
+                x++;
+                break;
+            case 3:
+                client.user.setActivity(`ETH : ${ethdat.price.slice(0,-6)}`, {
+                    type: "WATCHING",
+                });
+                x++;
+                break;
+            case 4:
+                client.user.setActivity(`BNB : ${bnbdat.price.slice(0,-6)}`, {
+                    type: "WATCHING",
+                });
+                x = 1;
+                break;
+        }
+    },4000);
+    // setInterval(() => {
+    //     if(x == 0){
+    //         setTimeout(async () => {
+    //             client.user.setActivity("Your DMs", {
+    //                 type: "LISTENING",
+    //             });
+    //             btc = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`);
+    //             btcdat = await btc.json();
+    //             eth = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT`);
+    //             ethdat = await eth.json();
+    //             x = 1;
+    //             console.log('Elapsed :',(Date.now() - startTime)/1000,'sec | Status Variable =',x,btcdat,ethdat);
+    //         }, 5000);
+    //     }
+    //     else{
+    //         client.user.setActivity(`BTC:${btcdat.price.slice(0,-9)} | ETH:${ethdat.price.slice(0,-9)}`, {
+    //             type: "WATCHING",
+    //         });
+    //         x = 0;
+    //     }
+    // }, 5000);
 }
