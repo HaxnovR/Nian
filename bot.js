@@ -3,19 +3,27 @@ const Discord = require('discord.js');
 const fs = require("fs");
 const dotenv = require('dotenv').config({path:".env"});
 const logger = require('./clientLogs/logger')
+const { Player } = require('discord-music-player');
 
 // Switch application between Development and Production mode
-const mode = 'prod' // prod or dev
+const mode = 'dev' // prod or dev
 
 const client = new Client({
   partials: ["CHANNEL"],
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES],
   ws: { properties: { $browser: "Discord iOS" }}
 });
 
 const help_footer = {
   text:"To get list of all commands use n.help",
 }
+
+const player = new Player(client, {
+  leaveOnEmpty: false,
+  deafenOnJoin: true,
+  quality: "high" // This options are optional.
+});
+client.player = player;
 
 // holds all available commands
 const help = {
@@ -36,7 +44,7 @@ const help = {
 }
 const calls = ['help','ping','echo','kill','reload','clear','mau',
               'urlsh','dog','duck','uwu','owo','mal','crypto','upload',
-              'spotify','trade','av'];
+              'spotify','trade','av','join','dc','play','queue'];
 const slashCalls = ['help','av','ping','trade'];
 client.mode = mode;
 client.help = help;

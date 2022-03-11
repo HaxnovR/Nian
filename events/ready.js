@@ -1,6 +1,7 @@
 const logger = require('../clientLogs/logger');
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
+const { MessageEmbed } = require("discord.js");
 
 logger.setLevel('all');
 
@@ -11,6 +12,14 @@ module.exports = async (client) => {
     \t\t\ton channels: ${client.channels.cache.size} | on Servers: ${client.guilds.cache.size} | for Users: ${client.guilds.cache.size}
 ____________________________________________________________________________________________________________`);
 
+    client.player.on('songChanged', (queue, newSong, oldSong) => {
+        const embed = new MessageEmbed();
+        embed.setTitle(`Now Playing:`);
+        embed.setDescription(`${song.name}`);
+        embed.setThumbnail(song.thumbnail);
+        console.log(`${newSong} is now playing.`)
+        message.channel.send()
+    });
 
     // Load Slash Commands
     let slash;
@@ -36,64 +45,64 @@ ________________________________________________________________________________
     if(mode == 'prod' ? slash = client.application.commands : slash = guild.commands);
     let nios = guild.commands;
 
-    slash.create({
-        name: 'ping',
-        description: 'Pings the bot'
-    })
-    slash.create({
-        name: 'av',
-        description: 'Get the avatar of a user',
-        options: [
-            {
-                name: 'user',
-                required: true,
-                description: 'get avatar of mentioned user',
-                type: Discord.Constants.ApplicationCommandOptionTypes.MENTIONABLE
-            },
-            {
-                name: 'hidden',
-                required: false,
-                description: 'only you can see the message if TRUE',
-                type: Discord.Constants.ApplicationCommandOptionTypes.BOOLEAN
-            }
-        ]
-    })
-    // change slash to nios in production
-    nios.create({
-        name: 'trade',
-        description: 'binance futures trading',
-        options: [
-            {
-                name: 'pos',
-                description: 'get the balance of the futures account',
-                type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
-                options: [
-                    {
-                        name: 'symbol',
-                        description: 'symbol, eg: (btc, eth, SOL)',
-                        required: false,
-                        type: Discord.Constants.ApplicationCommandOptionTypes.STRING
-                    }
-                ]
-            },
-            {
-                name: 'bal',
-                description: 'get the balance of the futures account',
-                type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND
-            }
-        ]
-    })
-    slash.create({
-        name: 'help',
-        description: 'Get a list of all the available commands (≧∀≦)ゞ',
-        options: [
-            {
-                name: 'hidden',
-                description: 'only you can see this message if TRUE',
-                type: Discord.Constants.ApplicationCommandOptionTypes.BOOLEAN
-            }
-        ]
-    })
+    // slash.create({
+    //     name: 'ping',
+    //     description: 'Pings the bot'
+    // })
+    // slash.create({
+    //     name: 'av',
+    //     description: 'Get the avatar of a user',
+    //     options: [
+    //         {
+    //             name: 'user',
+    //             required: true,
+    //             description: 'get avatar of mentioned user',
+    //             type: Discord.Constants.ApplicationCommandOptionTypes.MENTIONABLE
+    //         },
+    //         {
+    //             name: 'hidden',
+    //             required: false,
+    //             description: 'only you can see the message if TRUE',
+    //             type: Discord.Constants.ApplicationCommandOptionTypes.BOOLEAN
+    //         }
+    //     ]
+    // })
+    // // change slash to nios in production
+    // nios.create({
+    //     name: 'trade',
+    //     description: 'binance futures trading',
+    //     options: [
+    //         {
+    //             name: 'pos',
+    //             description: 'get the balance of the futures account',
+    //             type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+    //             options: [
+    //                 {
+    //                     name: 'symbol',
+    //                     description: 'symbol, eg: (btc, eth, SOL)',
+    //                     required: false,
+    //                     type: Discord.Constants.ApplicationCommandOptionTypes.STRING
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             name: 'bal',
+    //             description: 'get the balance of the futures account',
+    //             type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND
+    //         }
+    //     ]
+    // })
+    // slash.create({
+    //     name: 'help',
+    //     description: 'Get a list of all the available commands (≧∀≦)ゞ',
+    //     options: [
+    //         {
+    //             name: 'hidden',
+    //             description: 'only you can see this message if TRUE',
+    //             type: Discord.Constants.ApplicationCommandOptionTypes.BOOLEAN
+    //         }
+    //     ]
+    // })
 
     // ---------ACTIVITY-----------
     let startTime = Date.now();
@@ -135,25 +144,4 @@ ________________________________________________________________________________
                 break;
         }
     },4000);
-    // setInterval(() => {
-    //     if(x == 0){
-    //         setTimeout(async () => {
-    //             client.user.setActivity("Your DMs", {
-    //                 type: "LISTENING",
-    //             });
-    //             btc = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`);
-    //             btcdat = await btc.json();
-    //             eth = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT`);
-    //             ethdat = await eth.json();
-    //             x = 1;
-    //             console.log('Elapsed :',(Date.now() - startTime)/1000,'sec | Status Variable =',x,btcdat,ethdat);
-    //         }, 5000);
-    //     }
-    //     else{
-    //         client.user.setActivity(`BTC:${btcdat.price.slice(0,-9)} | ETH:${ethdat.price.slice(0,-9)}`, {
-    //             type: "WATCHING",
-    //         });
-    //         x = 0;
-    //     }
-    // }, 5000);
 }

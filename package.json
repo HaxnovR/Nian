@@ -1,6 +1,6 @@
 {
   "name": "nian-bot",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "",
   "main": "bot.js",
   "scripts": {
@@ -19,15 +19,21 @@
   },
   "homepage": "https://github.com/HaxnovR/temp-bot#readme",
   "dependencies": {
+    "@discordjs/opus": "^0.5.3",
+    "@discordjs/voice": "^0.8.0",
     "axios": "^0.26.0",
+    "discord-music-player": "^8.3.1",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
+    "ffmpeg": "^0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "imgur": "^2.1.0",
     "jikanjs": "^0.7.0",
     "nekos-best.js": "^4.0.4",
     "node-binance-api": "^0.13.1",
     "python-shell": "^3.0.1",
     "simple-node-logger": "^21.8.12",
-    "spotify-web-api-node": "^5.0.2"
+    "spotify-web-api-node": "^5.0.2",
+    "ytdl-core": "^4.11.0"
   }
 }
