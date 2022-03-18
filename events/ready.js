@@ -1,7 +1,6 @@
 const logger = require('../clientLogs/logger');
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
-const { MessageEmbed } = require("discord.js");
 
 logger.setLevel('all');
 
@@ -11,15 +10,6 @@ module.exports = async (client) => {
     \t\t\twebSocket Connection successful, Client Logged in at ${new Date().toLocaleTimeString()}
     \t\t\ton channels: ${client.channels.cache.size} | on Servers: ${client.guilds.cache.size} | for Users: ${client.guilds.cache.size}
 ____________________________________________________________________________________________________________`);
-
-    client.player.on('songChanged', (queue, newSong, oldSong) => {
-        const embed = new MessageEmbed();
-        embed.setTitle(`Now Playing:`);
-        embed.setDescription(`${song.name}`);
-        embed.setThumbnail(song.thumbnail);
-        console.log(`${newSong} is now playing.`)
-        message.channel.send()
-    });
 
     // Load Slash Commands
     let slash;

@@ -1,9 +1,20 @@
 const { MessageEmbed } = require("discord.js");
 
 exports.run = async (client, message, args) => {
+    client.player.on('songChanged', (queue, newSong, oldSong) => {
+        const embed = new MessageEmbed();
+        embed.setTitle(`Now Playing:`);
+        embed.setColor('ff755c');
+        embed.setDescription(`${newSong.name}`);
+        embed.setThumbnail(newSong.thumbnail);
+        console.log(queue.player.queues.get('920947659232137236').guild.systemChannelId);
+        console.log(`${newSong} is now playing.`)
+    });
 
     if(!message.member.voice.channel){
-        message.reply('You must be in a voice channel (￣﹃￣)');
+        message.reply('You must be in a voice channel (￣﹃￣)').then(msg => {
+            setTimeout(() => msg.delete(), 5000);
+          });
         return;
     }
     // if(voice.getVoiceConnection(message.guild.id)?.state.status !== 'ready'){
@@ -24,5 +35,4 @@ exports.run = async (client, message, args) => {
             if(!guildQueue)
                 queue.stop();
         });
-    console.log(song);
 }
