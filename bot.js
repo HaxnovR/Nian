@@ -77,10 +77,21 @@ client.login(token);
 
 //--------------------------------------------OLD----------------------------------------------
 
-// .env stores:
-// |api
-// |TOKEN
-// |MASTER
-// |BOT_ID
-// |PREFIX
-// |spotify
+// .env params
+
+// TOKEN2=
+// TOKEN=
+// PREFIX=
+// api=
+// OPENAI_API_KEY=
+// MASTER=
+// BOT_ID=
+// spotify_auth=
+// spotify_id=
+// spotify_secret=
+// IMGUR=
+// binance_api=
+// binance_key=
+// apchannels=
+// traders=
+// TEST=
