@@ -10,7 +10,7 @@
 
 <br>
 
-<p align="center">Nian is an Experimental Discord bot which uses discord.js for discord api calls and GPT-3/GPT-J 6B for natural language processing. The Project is in an early Development Stage so the bot might be buggy and sometimes unresponsive. Project also does not use an advanced command manager (And will not :p) due to it interfering with the js child process spawner. Any kind of positive contribution towards this project is appriciated.<p>
+<p align="center">Nian is an Experimental Discord bot which uses discord.js for discord API calls and GPT-3/GPT-J 6B for natural language processing. The Project is in an early Development Stage so the bot might be buggy and sometimes unresponsive. The project also does not use an advanced command manager (And will not :p) due to it interfering with the js child process spawner. Any kind of positive contribution towards this project is appreciated.<p>
 <br><br>
 
 ## TODO:
